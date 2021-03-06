@@ -1111,9 +1111,27 @@ namespace TJAPlayer3
 			{
                 if( this.n現在のスクロールカウンタ == 0 )
                 {
-                    if( TJAPlayer3.Tx.SongSelect_Bar_Center != null )
-                        TJAPlayer3.Tx.SongSelect_Bar_Center.t2D描画( TJAPlayer3.app.Device, 448, TJAPlayer3.Skin.SongSelect_Overall_Y);
-                    switch (r現在選択中の曲.eノード種別)
+					CenterCounter.t進行();
+					CenterCounter2.t進行();
+					CenterCounter3.t進行();
+
+					BarCounterX.t進行();
+					BarCounterX2.t進行();
+
+					if (CenterCounter.n現在の値 > 24)
+					{
+
+						CenterCounter2.t開始(0, 60, 5, TJAPlayer3.Timer);
+						CenterCounter.t停止();
+						CenterCounter.n現在の値 = 0;
+					}
+
+					for (int i = 0; i < 13; i++)
+					{
+						int nパネル番号C = (((this.n現在の選択行 + 1) + i) + 13) % 13;
+						Bar_Center(448 + 425 + BarCounterX.n現在の値 * 2 - BarCounterX2.n現在の値 * 2, TJAPlayer3.Skin.SongSelect_Overall_Y + 128 + 70, this.stバー情報[nパネル番号C].strジャンル, CenterCounter2.n現在の値);
+					}
+					switch (r現在選択中の曲.eノード種別)
                     {
                         case C曲リストノード.Eノード種別.SCORE:
                             {
@@ -1195,63 +1213,123 @@ namespace TJAPlayer3
 						double db割合0to1 = ( (double) this.ct登場アニメ用[ i ].n現在の値 ) / 100.0;
 						double db回転率 = Math.Sin( Math.PI * 3 / 5 * db割合0to1 );
 						int nパネル番号 = (  ( this.n現在の選択行 - 5 ) + i  + 13 ) % 13;
-						
-						if( i == 5 )
+						int n見た目の行番号 = i;
+						int n次のパネル番号 = (this.n現在のスクロールカウンタ <= 0) ? ((i + 1) % 13) : (((i - 1) + 13) % 13);
+						int x = i選曲バーX座標;
+						int xAnime = this.ptバーの座標[n見た目の行番号].X + ((int)((this.ptバーの座標[n次のパネル番号].X - this.ptバーの座標[n見た目の行番号].X) * (((double)Math.Abs(this.n現在のスクロールカウンタ)) / 100.0)));
+						int y = this.ptバーの座標[n見た目の行番号].Y + ((int)((this.ptバーの座標[n次のパネル番号].Y - this.ptバーの座標[n見た目の行番号].Y) * (((double)Math.Abs(this.n現在のスクロールカウンタ)) / 100.0)));
+
+						if ( i == 5 )
 						{
-							// (A) 選択曲パネルを描画。
+							//// (A) 選択曲パネルを描画。
+
+							//#region [ タイトル名テクスチャを描画。]
+							////-----------------
+							//                     if( this.stバー情報[ nパネル番号 ].strタイトル文字列 != "" && this.stバー情報[ nパネル番号 ].strタイトル文字列 != null && this.ttk選択している曲の曲名 == null )
+							//                         this.ttk選択している曲の曲名 = this.ttk曲名テクスチャを生成する( this.stバー情報[ nパネル番号 ].strタイトル文字列, Color.White, Color.Black);
+							//                     if( this.stバー情報[ nパネル番号 ].strサブタイトル != "" && this.stバー情報[ nパネル番号 ].strサブタイトル != null && this.ttk選択している曲のサブタイトル == null )
+							//                         this.ttk選択している曲のサブタイトル = this.ttkサブタイトルテクスチャを生成する( this.stバー情報[ nパネル番号 ].strサブタイトル );
+
+
+							//                     if( this.ttk選択している曲のサブタイトル != null )
+							//                     {
+							//                         var tx選択している曲のサブタイトル = ResolveTitleTexture(ttk選択している曲のサブタイトル);
+							//                         int nサブタイY = (int)(TJAPlayer3.Skin.SongSelect_Overall_Y + 440 - (tx選択している曲のサブタイトル.sz画像サイズ.Height * tx選択している曲のサブタイトル.vc拡大縮小倍率.Y ));
+							//    tx選択している曲のサブタイトル.t2D描画( TJAPlayer3.app.Device, 707, nサブタイY );
+							//                         if( this.ttk選択している曲の曲名 != null )
+							//                         {
+							//                             ResolveTitleTexture(this.ttk選択している曲の曲名).t2D描画( TJAPlayer3.app.Device, 750, TJAPlayer3.Skin.SongSelect_Overall_Y+23);
+							//                         }
+							//                     }
+							//                     else
+							//                     {
+							//                         if( this.ttk選択している曲の曲名 != null )
+							//                         {
+							//                             ResolveTitleTexture(this.ttk選択している曲の曲名).t2D描画( TJAPlayer3.app.Device, 750, TJAPlayer3.Skin.SongSelect_Overall_Y + 23);
+							//                         }
+							//                     }
+
+							//#endregion
+							// (A) スクロールが停止しているときの選択曲バーの描画。
 
 							#region [ タイトル名テクスチャを描画。]
 							//-----------------
-                            if( this.stバー情報[ nパネル番号 ].strタイトル文字列 != "" && this.stバー情報[ nパネル番号 ].strタイトル文字列 != null && this.ttk選択している曲の曲名 == null )
-                                this.ttk選択している曲の曲名 = this.ttk曲名テクスチャを生成する( this.stバー情報[ nパネル番号 ].strタイトル文字列, Color.White, Color.Black);
-                            if( this.stバー情報[ nパネル番号 ].strサブタイトル != "" && this.stバー情報[ nパネル番号 ].strサブタイトル != null && this.ttk選択している曲のサブタイトル == null )
-                                this.ttk選択している曲のサブタイトル = this.ttkサブタイトルテクスチャを生成する( this.stバー情報[ nパネル番号 ].strサブタイトル );
+							if (this.stバー情報[nパネル番号].strタイトル文字列 != "" && this.ttk選択している曲の曲名 == null)
+								this.ttk選択している曲の曲名 = this.ttk曲名テクスチャを生成する(this.stバー情報[nパネル番号].strタイトル文字列, Color.White, Color.Black);
+							if (this.stバー情報[nパネル番号].strサブタイトル != "" && this.ttk選択している曲のサブタイトル == null)
+								this.ttk選択している曲のサブタイトル = this.ttkサブタイトルテクスチャを生成する(this.stバー情報[nパネル番号].strサブタイトル);
 
+							if (this.stバー情報[nパネル番号].strタイトル文字列 != "" && this.ttk選択している曲の曲名2 == null)
+								this.ttk選択している曲の曲名2 = this.ttk曲名テクスチャを生成する2(this.stバー情報[nパネル番号].strタイトル文字列, Color.White, Color.Black);
+							if (this.stバー情報[nパネル番号].strサブタイトル != "" && this.ttk選択している曲のサブタイトル2 == null)
+								this.ttk選択している曲のサブタイトル2 = this.ttkサブタイトルテクスチャを生成する2(this.stバー情報[nパネル番号].strサブタイトル);
+							switch (r現在選択中の曲.eノード種別)
+							{
+								case C曲リストノード.Eノード種別.SCORE:
 
-                            if( this.ttk選択している曲のサブタイトル != null )
-                            {
-                                var tx選択している曲のサブタイトル = ResolveTitleTexture(ttk選択している曲のサブタイトル);
-                                int nサブタイY = (int)(TJAPlayer3.Skin.SongSelect_Overall_Y + 440 - (tx選択している曲のサブタイトル.sz画像サイズ.Height * tx選択している曲のサブタイトル.vc拡大縮小倍率.Y ));
-							    tx選択している曲のサブタイトル.t2D描画( TJAPlayer3.app.Device, 707, nサブタイY );
-                                if( this.ttk選択している曲の曲名 != null )
-                                {
-                                    ResolveTitleTexture(this.ttk選択している曲の曲名).t2D描画( TJAPlayer3.app.Device, 750, TJAPlayer3.Skin.SongSelect_Overall_Y+23);
-                                }
-                            }
-                            else
-                            {
-                                if( this.ttk選択している曲の曲名 != null )
-                                {
-                                    ResolveTitleTexture(this.ttk選択している曲の曲名).t2D描画( TJAPlayer3.app.Device, 750, TJAPlayer3.Skin.SongSelect_Overall_Y + 23);
-                                }
-                            }
+									//サブタイトルがあったら700
+									if (this.ttk選択している曲のサブタイトル2 != null)
+									{
+										var tx選択している曲のサブタイトル2 = ResolveTitleTexture(ttk選択している曲のサブタイトル2);
+										tx選択している曲のサブタイトル2.t2D中心基準描画(TJAPlayer3.app.Device, 425 + (int)(BarCounterX.n現在の値 / 3.3 - BarCounterX2.n現在の値 / 3.3) * 2, -300 + (int)(CenterCounter3.n現在の値 * 8) + (int)(BarCounterX.n現在の値 / 16 - BarCounterX2.n現在の値 / 16) * 2);
 
+										if (this.ttk選択している曲の曲名2 != null)
+										{
+											ResolveTitleTexture(this.ttk選択している曲の曲名2).t2D中心基準描画(TJAPlayer3.app.Device, 425 + (int)(BarCounterX.n現在の値 / 3.3 - BarCounterX2.n現在の値 / 3.3) * 2, -350 + (int)(CenterCounter3.n現在の値 * 8) + (int)(BarCounterX.n現在の値 / 16 - BarCounterX2.n現在の値 / 16) * 2);
+										}
+									}
+									else
+									{
+										if (this.ttk選択している曲の曲名2 != null)
+										{
+											ResolveTitleTexture(this.ttk選択している曲の曲名2).t2D中心基準描画(TJAPlayer3.app.Device, 425 + (int)(BarCounterX.n現在の値 / 3.3 - BarCounterX2.n現在の値 / 3.3) * 2, -350 + (int)(CenterCounter3.n現在の値 * 8) + (int)(BarCounterX.n現在の値 / 16 - BarCounterX2.n現在の値 / 16) * 2);
+										}
+									}
+									break;
+
+							}
+							if (this.ttk選択している曲のサブタイトル != null)
+							{
+								var tx選択している曲のサブタイトル = ResolveTitleTexture(ttk選択している曲のサブタイトル);
+								int nサブタイY = (int)(TJAPlayer3.Skin.SongSelect_Overall_Y + 440 - (tx選択している曲のサブタイトル.sz画像サイズ.Height * tx選択している曲のサブタイトル.vc拡大縮小倍率.Y));
+								tx選択している曲のサブタイトル.Opacity = CenterCounter2.n現在の値 * 4;
+								tx選択している曲のサブタイトル.t2D中心基準描画(TJAPlayer3.app.Device, TJAPlayer3.Skin.SongSelect_Overall_Y + 940 + BarCounterX.n現在の値 * 2 - BarCounterX2.n現在の値 * 2, TJAPlayer3.Skin.SongSelect_Overall_Y + 128 + 115 + (int)(CenterCounter2.n現在の値 / 2.5));
+								if (this.ttk選択している曲の曲名 != null)
+								{
+									ResolveTitleTexture(this.ttk選択している曲の曲名).t2D中心基準描画(TJAPlayer3.app.Device, TJAPlayer3.Skin.SongSelect_Overall_Y + 940 + BarCounterX.n現在の値 * 2 - BarCounterX2.n現在の値 * 2, TJAPlayer3.Skin.SongSelect_Overall_Y + 128 + 115 - (int)(CenterCounter2.n現在の値 / 2.5) + 5);
+								}
+							}
+							else
+							{
+								if (this.ttk選択している曲の曲名 != null)
+								{
+									ResolveTitleTexture(this.ttk選択している曲の曲名).t2D中心基準描画(TJAPlayer3.app.Device, TJAPlayer3.Skin.SongSelect_Overall_Y + 940 + BarCounterX.n現在の値 * 2 - BarCounterX2.n現在の値 * 2, TJAPlayer3.Skin.SongSelect_Overall_Y + 128 + 115 + 5);
+								}
+							}
+							//-----------------
 							#endregion
 						}
 						else
 						{
 							// (B) その他のパネルの描画。
 
-							#region [ バーテクスチャの描画。]
+							#region [ バーテクスチャを描画。]
 							//-----------------
-							int width = (int) ( ( (double) ( ( 640 - this.ptバーの基本座標[ i ].X ) + 1 ) ) / Math.Sin( Math.PI * 3 / 5 ) );
-                            int x = i選曲バーX座標 + 500 - ( (int) ( db割合0to1 * 500 ) );
-							int y = this.ptバーの基本座標[ i ].Y;
-                            this.tジャンル別選択されていない曲バーの描画( this.ptバーの座標[ nパネル番号 ].X, TJAPlayer3.Skin.SongSelect_Overall_Y, this.stバー情報[ nパネル番号 ].strジャンル );
-                            if( this.stバー情報[ nパネル番号 ].b分岐[ TJAPlayer3.stage選曲.n現在選択中の曲の難易度 ] == true && i != 5 )
-                                TJAPlayer3.Tx.SongSelect_Branch.t2D描画( TJAPlayer3.app.Device, this.ptバーの座標[ nパネル番号 ].X + 66, TJAPlayer3.Skin.SongSelect_Overall_Y-5);
-                            if( this.stバー情報[ nパネル番号 ].ar難易度 != null )
-                            {
-                                int nX補正 = 0;
-                                if( this.stバー情報[ nパネル番号 ].ar難易度[ TJAPlayer3.stage選曲.n現在選択中の曲の難易度 ].ToString().Length == 2 )
-                                    nX補正 = -6;
-                                this.t小文字表示( this.ptバーの座標[ nパネル番号 ].X + 65 + nX補正, 559, this.stバー情報[ nパネル番号 ].ar難易度[ TJAPlayer3.stage選曲.n現在選択中の曲の難易度 ].ToString() );
-                            }
+							if (n現在のスクロールカウンタ != 0)
+								this.tジャンル別選択されていない曲バーの描画(TJAPlayer3.Skin.SongSelect_Overall_Y + 750 + BarCounterX.n現在の値 * 2 - BarCounterX2.n現在の値 * 2, xAnime, this.stバー情報[nパネル番号].strジャンル);
+							else if (n見た目の行番号 != 5)
+								this.tジャンル別選択されていない曲バーの描画(TJAPlayer3.Skin.SongSelect_Overall_Y + 750 + BarCounterX.n現在の値 * 2 - BarCounterX2.n現在の値 * 2, xAnime, this.stバー情報[nパネル番号].strジャンル);
+							if (this.stバー情報[nパネル番号].b分岐[TJAPlayer3.stage選曲.n現在選択中の曲の難易度] == true && n見た目の行番号 != 5)
+								TJAPlayer3.Tx.SongSelect_Branch.t2D描画(TJAPlayer3.app.Device, xAnime + 66, TJAPlayer3.Skin.SongSelect_Overall_Y - 5);
 							//-----------------
 							#endregion
+
 							#region [ タイトル名テクスチャを描画。]
-                            if( this.stバー情報[ nパネル番号 ].ttkタイトル != null )
-                                ResolveTitleTexture(this.stバー情報[ nパネル番号 ].ttkタイトル).t2D描画( TJAPlayer3.app.Device, this.ptバーの座標[ i ].X + 28, TJAPlayer3.Skin.SongSelect_Overall_Y+23);
+
+							if (n現在のスクロールカウンタ != 0)
+								ResolveTitleTexture(this.stバー情報[nパネル番号].ttkタイトル).t2D中心基準描画(TJAPlayer3.app.Device, TJAPlayer3.Skin.SongSelect_Overall_Y + 940 + BarCounterX.n現在の値 * 2 - BarCounterX2.n現在の値 * 2, xAnime + 45);
+							else if (n見た目の行番号 != 5)
+								ResolveTitleTexture(this.stバー情報[nパネル番号].ttkタイトル).t2D中心基準描画(TJAPlayer3.app.Device, TJAPlayer3.Skin.SongSelect_Overall_Y + 940 + BarCounterX.n現在の値 * 2 - BarCounterX2.n現在の値 * 2, xAnime + 45);
 							#endregion
 
 							bool DanJudge = false;
@@ -1310,25 +1388,25 @@ namespace TJAPlayer3
 					int y = this.ptバーの座標[n見た目の行番号].Y + ((int)((this.ptバーの座標[n次のパネル番号].Y - this.ptバーの座標[n見た目の行番号].Y) * (((double)Math.Abs(this.n現在のスクロールカウンタ)) / 100.0)));
 
 					{
-                        // (B) スクロール中の選択曲バー、またはその他のバーの描画。
-                        
-                        #region [ バーテクスチャを描画。]
-                        //-----------------
-                        if (n現在のスクロールカウンタ != 0)
-							this.tジャンル別選択されていない曲バーの描画( TJAPlayer3.Skin.SongSelect_Overall_Y + 750 + BarCounterX.n現在の値 * 2 - BarCounterX2.n現在の値 * 2, xAnime , this.stバー情報[nパネル番号].strジャンル);
+						// (B) スクロール中の選択曲バー、またはその他のバーの描画。
+
+						#region [ バーテクスチャを描画。]
+						//-----------------
+						if (n現在のスクロールカウンタ != 0)
+							this.tジャンル別選択されていない曲バーの描画(TJAPlayer3.Skin.SongSelect_Overall_Y + 750 + BarCounterX.n現在の値 * 2 - BarCounterX2.n現在の値 * 2, xAnime, this.stバー情報[nパネル番号].strジャンル);
 						else if (n見た目の行番号 != 5)
-							this.tジャンル別選択されていない曲バーの描画(TJAPlayer3.Skin.SongSelect_Overall_Y + 750 + BarCounterX.n現在の値 * 2 - BarCounterX2.n現在の値 * 2,  xAnime , this.stバー情報[nパネル番号].strジャンル);
+							this.tジャンル別選択されていない曲バーの描画(TJAPlayer3.Skin.SongSelect_Overall_Y + 750 + BarCounterX.n現在の値 * 2 - BarCounterX2.n現在の値 * 2, xAnime, this.stバー情報[nパネル番号].strジャンル);
 						if (this.stバー情報[nパネル番号].b分岐[TJAPlayer3.stage選曲.n現在選択中の曲の難易度] == true && n見た目の行番号 != 5)
-                            TJAPlayer3.Tx.SongSelect_Branch.t2D描画(TJAPlayer3.app.Device, xAnime + 66, TJAPlayer3.Skin.SongSelect_Overall_Y - 5);
-                        //-----------------
-                        #endregion
+							TJAPlayer3.Tx.SongSelect_Branch.t2D描画(TJAPlayer3.app.Device, xAnime + 66, TJAPlayer3.Skin.SongSelect_Overall_Y - 5);
+						//-----------------
+						#endregion
 
-                        #region [ タイトル名テクスチャを描画。]
+						#region [ タイトル名テクスチャを描画。]
 
-                        if (n現在のスクロールカウンタ != 0)
-                            ResolveTitleTexture(this.stバー情報[ nパネル番号 ].ttkタイトル).t2D中心基準描画( TJAPlayer3.app.Device, TJAPlayer3.Skin.SongSelect_Overall_Y + 940 + BarCounterX.n現在の値 * 2 - BarCounterX2.n現在の値 * 2, xAnime + 45);
-                        else if (n見た目の行番号 != 5)
-                            ResolveTitleTexture(this.stバー情報[nパネル番号].ttkタイトル).t2D中心基準描画(TJAPlayer3.app.Device, TJAPlayer3.Skin.SongSelect_Overall_Y + 940 + BarCounterX.n現在の値 * 2 - BarCounterX2.n現在の値 * 2, xAnime + 45);
+						if (n現在のスクロールカウンタ != 0)
+							ResolveTitleTexture(this.stバー情報[nパネル番号].ttkタイトル).t2D中心基準描画(TJAPlayer3.app.Device, TJAPlayer3.Skin.SongSelect_Overall_Y + 940 + BarCounterX.n現在の値 * 2 - BarCounterX2.n現在の値 * 2, xAnime + 45);
+						else if (n見た目の行番号 != 5)
+							ResolveTitleTexture(this.stバー情報[nパネル番号].ttkタイトル).t2D中心基準描画(TJAPlayer3.app.Device, TJAPlayer3.Skin.SongSelect_Overall_Y + 940 + BarCounterX.n現在の値 * 2 - BarCounterX2.n現在の値 * 2, xAnime + 45);
 						#endregion
 
 						if ( this.stバー情報[ nパネル番号 ].ar難易度 != null )
