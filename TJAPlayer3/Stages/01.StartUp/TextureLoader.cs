@@ -341,6 +341,16 @@ namespace TJAPlayer3
             Background_Up_Clear = new CTexture[2];
             Background_Up_Clear[0] = TxC(GAME + BACKGROUND + @"0\" + @"1P_Up_Clear.png");
             Background_Up_Clear[1] = TxC(GAME + BACKGROUND + @"0\" + @"2P_Up_Clear.png");
+            Background_Wave = new CTexture[4];
+            Background_Wave[0] = TxC(GAME + BACKGROUND + @"Wave\" + @"Normal\" + @"0.png");
+            Background_Wave[1] = TxC(GAME + BACKGROUND + @"Wave\" + @"Normal\" + @"1.png");
+            Background_Wave[2] = TxC(GAME + BACKGROUND + @"Wave\" + @"Normal\" + @"2.png");
+            Background_Wave[3] = TxC(GAME + BACKGROUND + @"Wave\" + @"Normal\" + @"3.png");
+            Background_Wave_Clear = new CTexture[4];
+            Background_Wave_Clear[0] = TxC(GAME + BACKGROUND + @"Wave\" + @"Clear\" + @"0.png");
+            Background_Wave_Clear[1] = TxC(GAME + BACKGROUND + @"Wave\" + @"Clear\" + @"1.png");
+            Background_Wave_Clear[2] = TxC(GAME + BACKGROUND + @"Wave\" + @"Clear\" + @"2.png");
+            Background_Wave_Clear[3] = TxC(GAME + BACKGROUND + @"Wave\" + @"Clear\" + @"3.png");
             Background_Down = TxC(GAME + BACKGROUND + @"0\" + @"Down.png");
             Background_Down_Clear = TxC(GAME + BACKGROUND + @"0\" + @"Down_Clear.png");
             Background_Down_Scroll = TxC(GAME + BACKGROUND + @"0\" + @"Down_Scroll.png");
@@ -742,6 +752,14 @@ namespace TJAPlayer3
             TJAPlayer3.tテクスチャの解放(ref Background_Up[1]);
             TJAPlayer3.tテクスチャの解放(ref Background_Up_Clear[0]);
             TJAPlayer3.tテクスチャの解放(ref Background_Up_Clear[1]);
+            TJAPlayer3.tテクスチャの解放(ref Background_Wave[0]);
+            TJAPlayer3.tテクスチャの解放(ref Background_Wave[1]);
+            TJAPlayer3.tテクスチャの解放(ref Background_Wave[2]);
+            TJAPlayer3.tテクスチャの解放(ref Background_Wave[3]);
+            TJAPlayer3.tテクスチャの解放(ref Background_Wave_Clear[0]);
+            TJAPlayer3.tテクスチャの解放(ref Background_Wave_Clear[1]);
+            TJAPlayer3.tテクスチャの解放(ref Background_Wave_Clear[2]);
+            TJAPlayer3.tテクスチャの解放(ref Background_Wave_Clear[3]);
             TJAPlayer3.tテクスチャの解放(ref Background_Down);
             TJAPlayer3.tテクスチャの解放(ref Background_Down_Clear);
             TJAPlayer3.tテクスチャの解放(ref Background_Down_Scroll);
@@ -1023,7 +1041,9 @@ namespace TJAPlayer3
             Background_Down_Clear,
             Background_Down_Scroll;
         public CTexture[] Background_Up,
-            Background_Up_Clear;
+            Background_Up_Clear,
+            Background_Wave,
+            Background_Wave_Clear;
         #endregion
         #region 太鼓
         public CTexture[] Taiko_Frame, // MTaiko下敷き

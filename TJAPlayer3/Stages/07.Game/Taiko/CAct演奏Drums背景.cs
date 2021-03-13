@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using FDK;
 
 namespace TJAPlayer3
@@ -46,6 +47,11 @@ namespace TJAPlayer3
             {
                 ct上背景スクロール用タイマー[i] = null;
             }
+            for (int i = 0; i < 2; i++)
+            {
+                ct上背景上下用タイマー[i] = null;
+            }
+                    
             TJAPlayer3.t安全にDisposeする( ref this.ct下背景スクロール用タイマー1 );
             base.On非活性化();
         }
@@ -60,6 +66,7 @@ namespace TJAPlayer3
             //this.ct上背景スクロール用タイマー = new CCounter( 1, 328, 40, CDTXMania.Timer );
             this.ct上背景スクロール用タイマー = new CCounter[2];
             this.ct上背景クリアインタイマー = new CCounter[2];
+            this.ct上背景上下用タイマー = new CCounter[2];
             for (int i = 0; i < 2; i++)
             {
                 if (TJAPlayer3.Tx.Background_Up[i] != null)
@@ -67,6 +74,7 @@ namespace TJAPlayer3
                     this.ct上背景スクロール用タイマー[i] = new CCounter(1, TJAPlayer3.Tx.Background_Up[i].szテクスチャサイズ.Width, 16, TJAPlayer3.Timer);
                     this.ct上背景クリアインタイマー[i] = new CCounter();
                 }
+                this.ct上背景上下用タイマー[i] = new CCounter(1, 30, 50, TJAPlayer3.Timer);
             }
             if (TJAPlayer3.Tx.Background_Down_Scroll != null)
                 this.ct下背景スクロール用タイマー1 = new CCounter( 1, TJAPlayer3.Tx.Background_Down_Scroll.szテクスチャサイズ.Width, 4, TJAPlayer3.Timer );
@@ -99,6 +107,11 @@ namespace TJAPlayer3
             {
                 if (this.ct上背景スクロール用タイマー[i] != null)
                     this.ct上背景スクロール用タイマー[i].t進行Loop();
+            }
+            for (int i = 0; i < 2; i++)
+            {
+                if (this.ct上背景上下用タイマー[i] != null)
+                    this.ct上背景上下用タイマー[i].t進行Loop();
             }
             if (this.ct下背景スクロール用タイマー1 != null)
                 this.ct下背景スクロール用タイマー1.t進行Loop();
@@ -135,6 +148,69 @@ namespace TJAPlayer3
                     for (int l = 1; l < ForLoop + 1; l++)
                     {
                         TJAPlayer3.Tx.Background_Up_Clear[i].t2D描画(TJAPlayer3.app.Device, (l * TJAPlayer3.Tx.Background_Up_Clear[i].szテクスチャサイズ.Width) - this.ct上背景スクロール用タイマー[i].n現在の値, TJAPlayer3.Skin.Background_Scroll_Y[i]);
+                    }
+                }
+                if (this.ct上背景上下用タイマー[i] != null)
+                {
+                    int ym;
+                    int xm;
+                    if (ct上背景上下用タイマー[i].n現在の値 <= ct上背景上下用タイマー[i].n終了値 * 0.5)
+                        ym = (int)((-ct上背景上下用タイマー[i].n現在の値) * 0.5);
+                    else
+                        ym = (int)((ct上背景上下用タイマー[i].n現在の値 - ct上背景上下用タイマー[i].n終了値) * 0.5);
+                    ym += (int)(ct上背景上下用タイマー[i].n終了値 * 0.125);
+                    xm = this.ct上背景スクロール用タイマー[i].n現在の値;
+
+                    for (int j = 3; j >= 0; j--)
+                    {
+                        if (TJAPlayer3.Tx.Background_Wave[j] != null)
+                        {
+                            int ymtmp = j % 2 == 0 ? ym : -ym;
+                            int xmtmp = j % 2 == 0 ? xm : xm + TJAPlayer3.Tx.Background_Wave[j].szテクスチャサイズ.Width / 4;
+                            double TexSize = 1280 / TJAPlayer3.Tx.Background_Wave[j].szテクスチャサイズ.Width;
+                            // 1280をテクスチャサイズで割ったものを切り上げて、プラス+2足す。
+                            int ForLoop = (int)Math.Ceiling(TexSize) + 2;
+                            //int nループ幅 = 328;
+                            TJAPlayer3.Tx.Background_Wave[j].t2D描画(TJAPlayer3.app.Device, 0 - xmtmp, TJAPlayer3.Skin.Background_Scroll_Y[i] + 30 + ymtmp - j * 15);
+                            for (int l = 1; l < ForLoop + 1; l++)
+                            {
+                                TJAPlayer3.Tx.Background_Wave[j].t2D描画(TJAPlayer3.app.Device, +(l * TJAPlayer3.Tx.Background_Wave[j].szテクスチャサイズ.Width) - xmtmp, TJAPlayer3.Skin.Background_Scroll_Y[i] + 30 + ymtmp - j * 15);
+                            }
+                        }
+                    }
+                }
+                if (this.ct上背景上下用タイマー[i] != null)
+                {
+                    int ym;
+                    int xm;
+                    if (ct上背景上下用タイマー[i].n現在の値 <= ct上背景上下用タイマー[i].n終了値 * 0.5)
+                        ym = (int)((-ct上背景上下用タイマー[i].n現在の値) * 0.5);
+                    else
+                        ym = (int)((ct上背景上下用タイマー[i].n現在の値 - ct上背景上下用タイマー[i].n終了値) * 0.5);
+                    ym += (int)(ct上背景上下用タイマー[i].n終了値 * 0.125);
+                    xm = this.ct上背景スクロール用タイマー[i].n現在の値;
+
+                    for (int j = 3; j >= 0; j--)
+                    {
+                        if (TJAPlayer3.Tx.Background_Wave_Clear[j] != null)
+                        {
+                            if (TJAPlayer3.stage演奏ドラム画面.bIsAlreadyCleared[i])
+                                TJAPlayer3.Tx.Background_Wave_Clear[j].Opacity = ((this.ct上背景クリアインタイマー[i].n現在の値 * 0xff) / 100);
+                            else
+                                TJAPlayer3.Tx.Background_Wave_Clear[j].Opacity = 0;
+
+                            int ymtmp = j % 2 == 0 ? ym : -ym;
+                            int xmtmp = j % 2 == 0 ? xm : xm + TJAPlayer3.Tx.Background_Wave_Clear[j].szテクスチャサイズ.Width / 4;
+                            double TexSize = 1280 / TJAPlayer3.Tx.Background_Wave_Clear[j].szテクスチャサイズ.Width;
+                            // 1280をテクスチャサイズで割ったものを切り上げて、プラス+2足す。
+                            int ForLoop = (int)Math.Ceiling(TexSize) + 2;
+                            //int nループ幅 = 328;
+                            TJAPlayer3.Tx.Background_Wave_Clear[j].t2D描画(TJAPlayer3.app.Device, 0 - xmtmp, TJAPlayer3.Skin.Background_Scroll_Y[i] + 30 + ymtmp - j * 15);
+                            for (int l = 1; l < ForLoop + 1; l++)
+                            {
+                                TJAPlayer3.Tx.Background_Wave_Clear[j].t2D描画(TJAPlayer3.app.Device, +(l * TJAPlayer3.Tx.Background_Wave_Clear[j].szテクスチャサイズ.Width) - xmtmp, TJAPlayer3.Skin.Background_Scroll_Y[i] + 30 + ymtmp - j * 15);
+                            }
+                        }
                     }
                 }
 
@@ -181,6 +257,7 @@ namespace TJAPlayer3
         #region[ private ]
         //-----------------
         private CCounter[] ct上背景スクロール用タイマー; //上背景のX方向スクロール用
+        private CCounter[] ct上背景上下用タイマー; //上背景のY方向上下用
         private CCounter ct下背景スクロール用タイマー1; //下背景パーツ1のX方向スクロール用
         private CCounter ct上背景FIFOタイマー;
         private CCounter[] ct上背景クリアインタイマー;
